@@ -236,12 +236,15 @@ onBeforeUnmount(() => {
             @click="openCertification(cert)"
           >
             <div class="certificate-preview">
-              <iframe
-                :src="`${cert.document}#toolbar=0&navpanes=0&scrollbar=0&view=FitH&page=1`"
-                :title="`${cert.title} certificate preview`"
-                loading="lazy"
-                tabindex="-1"
-              />
+              <div class="certificate-art" aria-hidden="true">
+                <div class="certificate-art-paper">
+                  <span class="certificate-art-issuer">{{ cert.issuer }}</span>
+                  <span class="certificate-art-seal">✦</span>
+                  <span class="certificate-art-label">Certificate</span>
+                  <span class="certificate-art-rule"></span>
+                  <span class="certificate-art-year">{{ cert.year }}</span>
+                </div>
+              </div>
               <div class="certificate-overlay">
                 <span class="certificate-year">{{ cert.year }}</span>
                 <h4>{{ cert.title }}</h4>
@@ -279,10 +282,27 @@ onBeforeUnmount(() => {
         </button>
 
         <div class="modal-certificate-image">
-          <iframe
-            :src="`${selectedCertification.document}#toolbar=0&navpanes=0&view=FitH&page=1`"
-            :title="`${selectedCertification.title} certificate`"
-          />
+          <div class="modal-document-card">
+            <span class="modal-document-icon" aria-hidden="true">PDF</span>
+            <h3>{{ selectedCertification.title }}</h3>
+            <p>{{ selectedCertification.issuer }} · {{ selectedCertification.year }}</p>
+            <a
+              :href="selectedCertification.document"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="certificate-document-link"
+            >
+              Open certificate PDF
+              <span aria-hidden="true">↗</span>
+            </a>
+            <a
+              :href="selectedCertification.document"
+              :download="`${selectedCertification.title}.pdf`"
+              class="certificate-download-link"
+            >
+              Download PDF
+            </a>
+          </div>
         </div>
 
         <div class="modal-content">
@@ -816,13 +836,88 @@ onBeforeUnmount(() => {
   border-color: rgba(255, 255, 255, 0.48);
 }
 
-.certificate-preview > iframe {
+.certificate-art {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 1rem;
+  background:
+    radial-gradient(ellipse at 50% 15%, rgba(120, 202, 255, 0.24), transparent 55%),
+    linear-gradient(145deg, #152f48, #091827 72%);
+}
+
+.certificate-art-paper {
+  position: relative;
+  display: flex;
+  width: min(74%, 16rem);
+  height: 78%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  overflow: hidden;
+  border: 1px solid rgba(222, 197, 137, 0.7);
+  border-radius: 0.2rem;
+  background:
+    linear-gradient(rgba(156, 128, 75, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(156, 128, 75, 0.07) 1px, transparent 1px),
+    linear-gradient(145deg, #f6f1df, #e7ddbf);
+  background-size: 14px 14px, 14px 14px, auto;
+  color: #26394a;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  transform: rotate(-2deg);
+}
+
+.certificate-art-paper::before {
+  position: absolute;
+  inset: 0.4rem;
+  border: 1px solid rgba(156, 128, 75, 0.35);
+  content: '';
   pointer-events: none;
+}
+
+.certificate-art-issuer {
+  max-width: 75%;
+  overflow: hidden;
+  color: #42617b;
+  font-size: clamp(0.55rem, 1vw, 0.7rem);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.certificate-art-seal {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border: 1px solid rgba(149, 112, 49, 0.65);
+  border-radius: 50%;
+  color: #a07b34;
+  font-size: 1.1rem;
+}
+
+.certificate-art-label {
+  color: #26394a;
+  font-family: Georgia, serif;
+  font-size: clamp(0.85rem, 1.7vw, 1.2rem);
+  font-weight: 700;
+}
+
+.certificate-art-rule {
+  width: 45%;
+  height: 1px;
+  background: rgba(149, 112, 49, 0.6);
+}
+
+.certificate-art-year {
+  color: #52677b;
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
 }
 
 .certificate-overlay {
@@ -915,18 +1010,89 @@ onBeforeUnmount(() => {
 
 .modal-certificate-image {
   position: relative;
-  overflow: hidden;
-  aspect-ratio: 1.25;
+  display: grid;
+  min-height: 14rem;
+  place-items: center;
   margin: 1rem 2rem 0;
   border-radius: 0.75rem;
-  background: #e6e4df;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(56, 189, 248, 0.17), transparent 70%),
+    #0d1c2b;
 }
 
-.modal-certificate-image > iframe {
-  display: block;
+.modal-document-card {
+  display: flex;
   width: 100%;
-  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+
+.modal-document-icon {
+  display: grid;
+  width: 3.5rem;
+  height: 4rem;
+  place-items: center;
+  border: 1px solid rgba(103, 232, 249, 0.45);
+  border-radius: 0.55rem;
+  background: rgba(14, 116, 190, 0.2);
+  color: var(--accent-cyan);
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.modal-document-card h3 {
+  margin: 1rem 0 0;
+  font-size: 1.1rem;
+}
+
+.modal-document-card p {
+  margin: 0.45rem 0 0;
+  color: var(--white-icon);
+  font-size: 0.85rem;
+}
+
+.certificate-document-link,
+.certificate-download-link {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+  padding: 0.65rem 1rem;
+  border: 1px solid rgba(56, 189, 248, 0.48);
+  border-radius: 0.6rem;
+  background: rgba(14, 116, 190, 0.2);
+  color: #dff6ff;
+  font-size: 0.85rem;
+  font-weight: 650;
+}
+
+.certificate-download-link {
+  min-height: auto;
+  margin-top: 0.75rem;
+  padding: 0;
   border: 0;
+  background: transparent;
+  color: var(--white-icon);
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.certificate-document-link:hover,
+.certificate-document-link:focus-visible {
+  border-color: var(--accent-blue);
+  background: rgba(14, 116, 190, 0.38);
+}
+
+.certificate-download-link:hover,
+.certificate-download-link:focus-visible {
+  color: var(--accent-cyan);
 }
 
 .modal-content {
