@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue';
 import logoUrl from '../selfimg/dev_tedslogo.svg';
 
-const resumeUrl = new URL('../image/Teddy Guangco Resume.pdf', import.meta.url).href;
+const resumeUrl = `${import.meta.env.BASE_URL}Teddy-Guangco-CV.pdf`;
 
 type NavItem = {
   label: string;
