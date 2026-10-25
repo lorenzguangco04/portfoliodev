@@ -101,7 +101,7 @@ const certifications = [
   {
     title: 'National Certificate II - Computer Systems Servicing',
     issuer: 'TESDA',
-    year: '2026',
+    year: '2023',
     document: new URL('../image/NC-unlocked.pdf', import.meta.url).href,
     description: 'National certification recognizing competency in installing, configuring, and maintaining computer systems and networks.',
     skills: ['Computer Systems', 'Hardware', 'Troubleshooting', 'Networking'],
@@ -319,10 +319,10 @@ onBeforeUnmount(() => {
   z-index: 0;
   inset: 0;
   background:
-    linear-gradient(rgba(100, 180, 255, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(100, 180, 255, 0.025) 1px, transparent 1px);
+    linear-gradient(rgba(100, 180, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(100, 180, 255, 0.045) 1px, transparent 1px);
   background-size: 44px 44px;
-  animation: grid-drift 24s linear infinite;
+  animation: grid-drift 18s linear infinite;
   content: '';
   pointer-events: none;
 }
@@ -1063,6 +1063,12 @@ onBeforeUnmount(() => {
 
   .modal-content {
     padding: 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .projects-section::before {
+    animation: none;
   }
 }
 </style>

@@ -78,11 +78,11 @@ const socialLinks = [
         <div class="portrait-frame">
           <img
             class="profile-photo"
-            src="/images/teddy-guangco.jpg"
+            src="/images/teddy-guangco-transparent.png"
             alt="Portrait of Teddy Guangco"
             fetchpriority="high"
           />
-          <span class="portrait-glow" aria-hidden="true"></span>
+          <span class="portrait-mode" aria-hidden="true">SHADOW MODE</span>
         </div>
       </div>
 
@@ -294,27 +294,109 @@ const socialLinks = [
   width: min(100%, 25rem);
   aspect-ratio: 0.9;
   justify-self: center;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 1.25rem;
-  background: #fff;
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.36);
+  isolation: isolate;
+}
+
+.portrait-frame::before,
+.portrait-frame::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  content: '';
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.portrait-frame::before {
+  z-index: -1;
+  width: 90%;
+  border: 1px solid rgba(167, 139, 250, 0.58);
+  box-shadow: inset 0 0 2rem rgba(99, 102, 241, 0.22), 0 0 1.5rem rgba(139, 92, 246, 0.24);
+  opacity: 0;
+  transition: opacity 0.4s ease, width 0.6s ease;
+}
+
+.portrait-frame::after {
+  z-index: -1;
+  width: 78%;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.34), rgba(59, 130, 246, 0.12) 48%, transparent 72%);
+  filter: blur(0.8rem);
+  opacity: 0.5;
+  transition: opacity 0.5s ease, width 0.6s ease;
 }
 
 .profile-photo {
+  position: relative;
+  z-index: 1;
   display: block;
-  width: 100%;
+  width: 92%;
   height: 100%;
-  object-fit: cover;
-  object-position: center 34%;
+  margin-inline: auto;
+  object-fit: contain;
+  object-position: center bottom;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 91%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 91%, transparent 100%);
+  filter: drop-shadow(0 1rem 1.5rem rgba(0, 0, 0, 0.3));
+  animation: portrait-float 5s ease-in-out infinite;
+  transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.55s ease;
 }
 
-.portrait-glow {
+@keyframes portrait-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-0.45rem);
+  }
+}
+
+.portrait-frame:hover::before {
+  width: 100%;
+  opacity: 1;
+  animation: shadow-orbit 12s linear infinite;
+}
+
+.portrait-frame:hover::after {
+  width: 94%;
+  opacity: 1;
+}
+
+.portrait-frame:hover .profile-photo {
+  transform: translateY(-0.65rem) scale(1.035);
+  filter: saturate(0.76) contrast(1.12)
+    drop-shadow(0 0 1rem rgba(167, 139, 250, 0.95))
+    drop-shadow(0 0 2.5rem rgba(79, 70, 229, 0.7));
+  animation-play-state: paused;
+}
+
+@keyframes shadow-orbit {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.portrait-mode {
   position: absolute;
-  inset: auto 0 0;
-  height: 25%;
-  background: linear-gradient(transparent, rgba(20, 10, 12, 0.2));
+  z-index: 2;
+  bottom: 0.4rem;
+  left: 50%;
+  color: #c4b5fd;
+  font-size: 0.7rem;
+  font-weight: 750;
+  letter-spacing: 0.24em;
+  opacity: 0;
   pointer-events: none;
+  text-shadow: 0 0 0.75rem rgba(167, 139, 250, 0.9);
+  transform: translate(-50%, 0.5rem);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.portrait-frame:hover .portrait-mode {
+  opacity: 1;
+  transform: translate(-50%, 0);
 }
 
 .social-list {
@@ -510,6 +592,27 @@ const socialLinks = [
   .portrait-frame {
     width: min(82%, 20rem);
     aspect-ratio: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profile-photo {
+    animation: none;
+    transition: none;
+  }
+
+  .portrait-frame::before,
+  .portrait-frame::after,
+  .portrait-mode {
+    transition: none;
+  }
+
+  .portrait-frame:hover::before {
+    animation: none;
+  }
+
+  .portrait-frame:hover .profile-photo {
+    transform: none;
   }
 }
 </style>

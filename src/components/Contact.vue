@@ -88,10 +88,10 @@ const submitForm = async () => {
   z-index: -1;
   inset: 0;
   background:
-    linear-gradient(rgba(100, 180, 255, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(100, 180, 255, 0.025) 1px, transparent 1px);
+    linear-gradient(rgba(100, 180, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(100, 180, 255, 0.045) 1px, transparent 1px);
   background-size: 44px 44px;
-  animation: grid-drift 24s linear infinite;
+  animation: grid-drift 18s linear infinite;
   content: '';
   pointer-events: none;
 }
@@ -284,6 +284,12 @@ h3 {
     border: 1px solid var(--white-icon-tr);
     border-radius: 0.85rem;
     background: rgba(7, 17, 31, 0.45);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-section::before {
+    animation: none;
   }
 }
 </style>

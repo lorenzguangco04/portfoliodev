@@ -2,27 +2,26 @@
 import { computed, ref } from 'vue';
 
 const CategoryIcons = {
-  'Web Development': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="M6 8h.01"></path><path d="M10 8h.01"></path><path d="M14 8h.01"></path></svg>',
-  'Mobile Development': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><rect width="10" height="14" x="3" y="8" rx="2"></rect><path d="M5 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2h-2.4"></path><path d="M8 18h.01"></path></svg>',
-  'UI/UX Design & Prototyping': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M12.034 12.681a.498.498 0 0 1 .647-.647l9 3.5a.5.5 0 0 1-.033.943l-3.444 1.068a1 1 0 0 0-.66.66l-1.067 3.443a.5.5 0 0 1-.943.033z"></path><path d="M5 17A12 12 0 0 1 17 5"></path><circle cx="19" cy="5" r="2"></circle><circle cx="5" cy="19" r="2"></circle></svg>',
+  'Backend Development': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><rect x="3" y="4" width="18" height="6" rx="2"></rect><rect x="3" y="14" width="18" height="6" rx="2"></rect><path d="M7 7h.01M7 17h.01M11 7h6M11 17h6"></path></svg>',
+  'Databases & APIs': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"></path></svg>',
+  'Tools & Professional Skills': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="m14.7 6.3 3 3M4 20l4.5-1 10.2-10.2a2.12 2.12 0 0 0-3-3L5.5 16 4 20Z"></path><path d="M3 4h6M3 8h4M3 12h2"></path></svg>',
 } as const;
 
 const skills = {
-  'Web Development': [
-    'Single Page Applications (SPAs)',
-    'Landing pages and business websites',
-    'Portfolio websites',
+  'Backend Development': [
+    'Server-side development with Node.js and PHP',
+    'Building REST APIs',
+    'Application logic and data handling',
   ],
-  'Mobile Development': [
-    'Mobile-friendly web apps',
-    'Ionic Vue',
-    'Capacitor',
-    'Building Android APKs',
+  'Databases & APIs': [
+    'MySQL and MongoDB Atlas',
+    'Database design and CRUD operations',
+    'REST API and JSON integration',
   ],
-  'UI/UX Design & Prototyping': [
-    'UI design with Figma & Canva',
-    'UX research & improvements',
-    'Prototyping for websites & mobile apps',
+  'Tools & Professional Skills': [
+    'Git, GitHub, npm, and VS Code',
+    'Deployment with Render and Vercel',
+    'Problem-solving, teamwork, and attention to detail',
   ],
 };
 

@@ -66,6 +66,11 @@ const socialLinks = [
     label: 'GitHub',
   },
   {
+    href: 'https://www.facebook.com/Misstokwa30',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-8.2h2.75l.41-3.2H13.5V7.56c0-.93.26-1.56 1.59-1.56h1.69V3.14C16.49 3.05 15.51 3 14.37 3c-2.39 0-4.03 1.46-4.03 4.14V9.6H7.63v3.2h2.71V21h3.16Z" /></svg>',
+    label: 'Facebook',
+  },
+  {
     href: 'mailto:teddyguangco1@gmail.com',
     icon: '<svg xmlns="http://www.w3.org/2000/svg" width="2.1em" height="2.1em" viewBox="0 0 24 24"><path fill="currentColor" d="m18.73 5.41l-1.28 1L12 10.46L6.55 6.37l-1.28-1A2 2 0 0 0 2 7.05v11.59A1.36 1.36 0 0 0 3.36 20h3.19v-7.72L12 16.37l5.45-4.09V20h3.19A1.36 1.36 0 0 0 22 18.64V7.05a2 2 0 0 0-3.27-1.64"></path></svg>',
     label: 'Email',
@@ -151,7 +156,7 @@ const stackItems = [
 <style scoped>
 .site-footer {
   width: 100%;
-  padding: 3rem 0 1rem;
+  padding: 1.5rem 0 0.75rem;
   border-top: 1px solid rgba(255,255,255,0.06);
 }
 
@@ -164,7 +169,7 @@ const stackItems = [
 .footer-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2rem;
+  gap: 1.25rem;
 }
 
 .social-links {
@@ -191,7 +196,7 @@ const stackItems = [
 
 .stack-list {
   display: grid;
-  gap: 0.75rem;
+  gap: 0.5rem;
   justify-content: center;
 }
 
@@ -214,7 +219,7 @@ const stackItems = [
 
 .mini-game {
   width: 100%;
-  padding: 1rem;
+  padding: 0.75rem;
   border: 1px solid var(--white-icon-tr);
   border-radius: 0.85rem;
   background: rgba(255, 255, 255, 0.03);
@@ -225,7 +230,7 @@ const stackItems = [
   justify-content: space-between;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
   color: var(--white-icon);
   font-size: 0.8rem;
 }
@@ -239,7 +244,7 @@ const stackItems = [
 .game-arena {
   position: relative;
   display: flex;
-  min-height: 7rem;
+  min-height: 5rem;
   align-items: center;
   justify-content: center;
   overflow: hidden;
@@ -278,8 +283,8 @@ const stackItems = [
 
 .game-start {
   width: 100%;
-  margin-top: 0.75rem;
-  padding: 0.55rem 0.75rem;
+  margin-top: 0.5rem;
+  padding: 0.45rem 0.75rem;
   border: 1px solid rgba(103, 232, 249, 0.3);
   border-radius: 0.55rem;
   background: rgba(56, 189, 248, 0.1);
@@ -294,8 +299,8 @@ const stackItems = [
 
 .copyright {
   border-top: 1px solid rgba(255,255,255,0.06);
-  margin-top: 3rem;
-  padding-top: 2rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
   text-align: center;
   color: var(--white-icon);
   font-size: 0.875rem;
@@ -343,7 +348,7 @@ const stackItems = [
 @media (min-width: 768px) {
   .footer-grid {
     grid-template-columns: 1fr 1fr 1fr;
-    align-items: start;
+    align-items: center;
   }
 
   .back-to-top {

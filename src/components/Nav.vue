@@ -2,6 +2,8 @@
 import { onMounted, ref } from 'vue';
 import logoUrl from '../selfimg/dev_tedslogo.svg';
 
+const resumeUrl = new URL('../image/Teddy Guangco Resume.pdf', import.meta.url).href;
+
 type NavItem = {
   label: string;
   href: string;
@@ -50,11 +52,13 @@ const handleNavResize = () => {
     const maxScroll = 1000;
     const scrollProgress = Math.min(window.scrollY / maxScroll, 1);
     const easeProgress = 1 - Math.pow(1 - scrollProgress, 4);
-    const minWidth = 528;
     const maxWidth = window.innerWidth * 0.8;
-    const currentWidth = maxWidth - (maxWidth - minWidth) * easeProgress;
     if (window.innerWidth >= 768) {
+      const minWidth = Math.min(560, maxWidth);
+      const currentWidth = maxWidth - (maxWidth - minWidth) * easeProgress;
       nav.value.style.width = `${currentWidth}px`;
+    } else {
+      nav.value.style.width = '80%';
     }
   } else {
     nav.value.classList.remove('scrolling');
@@ -101,6 +105,22 @@ onMounted(() => {
               <span class="nav-indicator" />
               <span class="nav-icon" v-html="item.icon" />
               <span class="nav-label">{{ item.label }}</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link cv-nav-link"
+              :href="resumeUrl"
+              download="Teddy-Guangco-CV.pdf"
+              aria-label="Download Teddy Guangco's CV"
+            >
+              <span class="nav-icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                  <path d="M12 3a1 1 0 0 1 1 1v9.59l3.3-3.3a1 1 0 1 1 1.4 1.42l-5 5a1 1 0 0 1-1.4 0l-5-5a1 1 0 0 1 1.4-1.42l3.3 3.3V4a1 1 0 0 1 1-1ZM5 19a1 1 0 0 1 1 1v1h12v-1a1 1 0 1 1 2 0v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1Z" />
+                </svg>
+              </span>
+              <span class="nav-label cv-label-mobile">CV</span>
+              <span class="nav-label cv-label-desktop">Download CV</span>
             </a>
           </li>
         </ul>
@@ -177,6 +197,47 @@ onMounted(() => {
   color: white !important;
 }
 
+.cv-nav-link {
+  flex-direction: row;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 2.75rem;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid rgba(207, 250, 254, 0.72);
+  border-radius: 0.8rem;
+  background: linear-gradient(135deg, #67e8f9, #38bdf8);
+  color: #07111f;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 0.35rem 1rem rgba(56, 189, 248, 0.24), inset 0 1px rgba(255, 255, 255, 0.35);
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.cv-nav-link:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(135deg, #a5f3fc, #67e8f9);
+  box-shadow: 0 0.5rem 1.3rem rgba(56, 189, 248, 0.34), inset 0 1px rgba(255, 255, 255, 0.5);
+}
+
+.cv-nav-link:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 3px;
+}
+
+.cv-nav-link .nav-icon {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.cv-nav-link .nav-icon :deep(svg) {
+  width: 100%;
+  height: 100%;
+}
+
+.nav-label.cv-label-desktop {
+  display: none;
+}
+
 .nav-link.active .nav-indicator {
   transform: translateY(-50%) scale(1);
   opacity: 1;
@@ -216,8 +277,13 @@ onMounted(() => {
   }
 
   .nav-list {
+    flex: 1;
+    width: auto;
+    min-width: 0;
     justify-content: center;
-    gap: 3rem;
+    gap: clamp(0.75rem, 2vw, 3rem);
+    margin-left: 5.75rem;
+    padding-right: 0.75rem;
   }
 
   .nav-brand {
@@ -242,6 +308,24 @@ onMounted(() => {
 
   .nav-link {
     font-size: 1rem;
+  }
+
+  .cv-nav-link {
+    min-width: 10rem;
+    padding: 0.6rem 1rem;
+  }
+
+  .cv-nav-link .nav-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .cv-label-mobile {
+    display: none;
+  }
+
+  .nav-label.cv-label-desktop {
+    display: inline-block;
   }
 }
 </style>
