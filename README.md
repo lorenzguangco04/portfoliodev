@@ -4,23 +4,23 @@ This portfolio is built with Vue 3 and Vite.
 
 ## Getting Started
 
-Install dependencies with pnpm:
+Install dependencies with npm:
 
 ```bash
-pnpm install
+npm install
 ```
 
 Start the development server:
 
 ```bash
-pnpm dev
+npm run dev
 ```
 
 Build the site:
 
 ```bash
-pnpm build
-pnpm preview
+npm run build
+npm run preview
 ```
 
 ## Certificates

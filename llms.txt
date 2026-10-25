@@ -5,7 +5,7 @@
 > contact form, a Spotify album embed, and a Firebase-backed like counter.
 
 Built as an Astro static site with React islands for interactive components. Requires Node.js >= 20
-and pnpm >= 9. External services needed for full functionality: a Formspree account (contact form)
+and npm. External services needed for full functionality: a Formspree account (contact form)
 and a Firebase project (like counter). Spotify embed is a plain HTML iframe--no API key required.
 
 ## Docs
@@ -26,7 +26,7 @@ and a Firebase project (like counter). Spotify embed is a plain HTML iframe--no 
 - **Formspree** -- serverless contact form backend
 - **Montserrat** (Fontsource variable) -- primary typeface
 - **OGL** -- WebGL utility used by the LetterGlitch canvas effect
-- **pnpm** -- package manager (enforced via `only-allow`)
+- **npm** -- package manager
 
 ## Optional
 
