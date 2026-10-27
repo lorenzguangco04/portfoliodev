@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 
 type Project = {
   title: string;
@@ -57,12 +57,24 @@ const otherProjects = [
   },
 ];
 
-const certifications = [
+type Certification = {
+  title: string;
+  issuer: string;
+  year: string;
+  document: string;
+  previewImage: string;
+  format?: 'image';
+  description: string;
+  skills: string[];
+};
+
+const certifications: Certification[] = [
   {
     title: 'Oracle Cloud Infrastructure Foundations',
     issuer: 'Oracle',
     year: '2025',
-    document: new URL('../image/eCertificate.pdf', import.meta.url).href,
+    document: new URL('../image/eCertificate (3).pdf', import.meta.url).href,
+    previewImage: new URL('../image/oracle-foundations-certificate.png', import.meta.url).href,
     description: 'Certified in Oracle Cloud Infrastructure fundamentals, including core services, networking, compute, storage, and security best practices.',
     skills: ['OCI', 'Cloud Computing', 'Networking', 'Security', 'IaC'],
   },
@@ -71,6 +83,7 @@ const certifications = [
     issuer: 'Oracle',
     year: '2025',
     document: new URL('../image/eCertificate (1).pdf', import.meta.url).href,
+    previewImage: new URL('../image/oracle-database-certificate.png', import.meta.url).href,
     description: 'Recognition of foundational knowledge in Oracle database administration and database operations.',
     skills: ['Oracle Database', 'SQL', 'Database Administration'],
   },
@@ -79,6 +92,7 @@ const certifications = [
     issuer: 'Oracle',
     year: '2025',
     document: new URL('../image/eCertificate (2).pdf', import.meta.url).href,
+    previewImage: new URL('../image/oracle-data-certificate.png', import.meta.url).href,
     description: 'Recognition of skills in Oracle Cloud data management services and cloud data solutions.',
     skills: ['Oracle Cloud', 'Data Management', 'Cloud Services'],
   },
@@ -86,7 +100,8 @@ const certifications = [
     title: 'Oracle Cloud Networking Professional',
     issuer: 'Oracle',
     year: '2025',
-    document: new URL('../image/eCertificate (3).pdf', import.meta.url).href,
+    document: new URL('../image/eCertificate.pdf', import.meta.url).href,
+    previewImage: new URL('../image/oracle-networking-certificate.png', import.meta.url).href,
     description: 'Recognition of professional-level knowledge of networking services and solutions in Oracle Cloud Infrastructure.',
     skills: ['OCI Networking', 'Cloud Infrastructure', 'Network Security'],
   },
@@ -95,6 +110,7 @@ const certifications = [
     issuer: 'Certificate',
     year: '2026',
     document: new URL('../image/certificate-208_NI__VI_12_2026-1792911663.pdf', import.meta.url).href,
+    previewImage: new URL('../image/certificate-achievement.png', import.meta.url).href,
     description: 'Certificate document provided in the project image folder.',
     skills: ['Achievement'],
   },
@@ -102,21 +118,83 @@ const certifications = [
     title: 'National Certificate II - Computer Systems Servicing',
     issuer: 'TESDA',
     year: '2023',
-    document: new URL('../image/NC-unlocked.pdf', import.meta.url).href,
+    document: new URL('../image/nc.png', import.meta.url).href,
+    previewImage: new URL('../image/nc.png', import.meta.url).href,
+    format: 'image',
     description: 'National certification recognizing competency in installing, configuring, and maintaining computer systems and networks.',
     skills: ['Computer Systems', 'Hardware', 'Troubleshooting', 'Networking'],
   },
 ];
 
-type Certification = (typeof certifications)[number];
 const selectedCertification = ref<Certification | null>(null);
+const isImageCertificate = computed(
+  () => selectedCertification.value?.format === 'image' || Boolean(selectedCertification.value?.previewImage),
+);
+const certificateViewport = ref<HTMLDivElement | null>(null);
+const certificateImage = ref<HTMLImageElement | null>(null);
+const certificateZoom = ref(1);
+const certificatePan = ref({ x: 0, y: 0 });
+const certificateDrag = ref<{ pointerId: number; x: number; y: number; panX: number; panY: number } | null>(null);
+
+const clampCertificatePan = (x: number, y: number) => {
+  const viewport = certificateViewport.value;
+  const image = certificateImage.value;
+  if (!viewport || !image) return { x, y };
+
+  const maxX = Math.max(0, (image.offsetWidth * certificateZoom.value - viewport.clientWidth) / 2);
+  const maxY = Math.max(0, (image.offsetHeight * certificateZoom.value - viewport.clientHeight) / 2);
+  return {
+    x: Math.max(-maxX, Math.min(maxX, x)),
+    y: Math.max(-maxY, Math.min(maxY, y)),
+  };
+};
+
+const setCertificateZoom = (zoom: number) => {
+  certificateZoom.value = Math.max(1, Math.min(3, zoom));
+  if (certificateZoom.value === 1) {
+    certificatePan.value = { x: 0, y: 0 };
+  } else {
+    certificatePan.value = clampCertificatePan(certificatePan.value.x, certificatePan.value.y);
+  }
+};
+
+const handleCertificateWheel = (event: WheelEvent) => {
+  setCertificateZoom(certificateZoom.value + (event.deltaY < 0 ? 0.2 : -0.2));
+};
+
+const startCertificateDrag = (event: PointerEvent) => {
+  if (certificateZoom.value === 1 || event.button !== 0) return;
+  certificateDrag.value = {
+    pointerId: event.pointerId,
+    x: event.clientX,
+    y: event.clientY,
+    panX: certificatePan.value.x,
+    panY: certificatePan.value.y,
+  };
+  certificateViewport.value?.setPointerCapture(event.pointerId);
+};
+
+const moveCertificateDrag = (event: PointerEvent) => {
+  const drag = certificateDrag.value;
+  if (!drag || drag.pointerId !== event.pointerId) return;
+  certificatePan.value = clampCertificatePan(
+    drag.panX + event.clientX - drag.x,
+    drag.panY + event.clientY - drag.y,
+  );
+};
+
+const endCertificateDrag = (event: PointerEvent) => {
+  if (certificateDrag.value?.pointerId === event.pointerId) certificateDrag.value = null;
+};
 
 const openCertification = (certification: Certification) => {
+  setCertificateZoom(1);
   selectedCertification.value = certification;
 };
 
 const closeCertification = () => {
   selectedCertification.value = null;
+  certificateDrag.value = null;
 };
 
 const handleKeydown = (event: KeyboardEvent) => {
@@ -237,13 +315,7 @@ onBeforeUnmount(() => {
           >
             <div class="certificate-preview">
               <div class="certificate-art" aria-hidden="true">
-                <div class="certificate-art-paper">
-                  <span class="certificate-art-issuer">{{ cert.issuer }}</span>
-                  <span class="certificate-art-seal">✦</span>
-                  <span class="certificate-art-label">Certificate</span>
-                  <span class="certificate-art-rule"></span>
-                  <span class="certificate-art-year">{{ cert.year }}</span>
-                </div>
+                <img class="certificate-art-image" :src="cert.previewImage" alt="" />
               </div>
               <div class="certificate-overlay">
                 <span class="certificate-year">{{ cert.year }}</span>
@@ -271,6 +343,7 @@ onBeforeUnmount(() => {
         :aria-label="`${selectedCertification.title} details`"
       >
         <button
+          v-if="!isImageCertificate"
           type="button"
           class="modal-close"
           aria-label="Close certificate details"
@@ -281,28 +354,72 @@ onBeforeUnmount(() => {
           </svg>
         </button>
 
-        <div class="modal-certificate-image">
-          <div class="modal-document-card">
-            <span class="modal-document-icon" aria-hidden="true">PDF</span>
-            <h3>{{ selectedCertification.title }}</h3>
-            <p>{{ selectedCertification.issuer }} · {{ selectedCertification.year }}</p>
-            <a
-              :href="selectedCertification.document"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="certificate-document-link"
+        <div
+          class="modal-certificate-image"
+          :class="{
+            'is-image-certificate': isImageCertificate,
+            'is-pdf-certificate': !isImageCertificate,
+          }"
+        >
+          <div v-if="isImageCertificate" class="certificate-zoom-controls" aria-label="Certificate zoom controls">
+            <button
+              type="button"
+              aria-label="Zoom out"
+              :disabled="certificateZoom <= 1"
+              @click="setCertificateZoom(certificateZoom - 0.25)"
+            >−</button>
+            <button
+              type="button"
+              aria-label="Reset zoom"
+              :disabled="certificateZoom === 1"
+              @click="setCertificateZoom(1)"
+            >Reset</button>
+            <button
+              type="button"
+              aria-label="Zoom in"
+              :disabled="certificateZoom >= 3"
+              @click="setCertificateZoom(certificateZoom + 0.25)"
+            >+</button>
+            <button
+              type="button"
+              class="modal-close modal-close-inline"
+              aria-label="Close certificate details"
+              @click="closeCertification"
             >
-              Open certificate PDF
-              <span aria-hidden="true">↗</span>
-            </a>
-            <a
-              :href="selectedCertification.document"
-              :download="`${selectedCertification.title}.pdf`"
-              class="certificate-download-link"
-            >
-              Download PDF
-            </a>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M18.3 5.71 12 12l6.3 6.29-1.42 1.42L10.59 13.4l-6.3 6.31-1.42-1.42L9.17 12 2.87 5.71l1.42-1.42 6.3 6.3 6.29-6.3z" />
+              </svg>
+            </button>
           </div>
+          <div
+            v-if="isImageCertificate"
+            ref="certificateViewport"
+            class="certificate-image-viewport"
+            :class="{ 'is-zoomed': certificateZoom > 1, 'is-dragging': certificateDrag }"
+            aria-label="Certificate image. Use the zoom controls or mouse wheel to zoom, then drag to pan."
+            @wheel.prevent="handleCertificateWheel"
+            @pointerdown="startCertificateDrag"
+            @pointermove="moveCertificateDrag"
+            @pointerup="endCertificateDrag"
+            @pointercancel="endCertificateDrag"
+          >
+            <img
+              ref="certificateImage"
+              class="modal-certificate-preview"
+              :src="selectedCertification.previewImage ?? selectedCertification.document"
+              :alt="`${selectedCertification.title} certificate`"
+              draggable="false"
+              :style="{
+                transform: `translate(${certificatePan.x}px, ${certificatePan.y}px) scale(${certificateZoom})`,
+              }"
+            />
+          </div>
+          <iframe
+            v-else
+            class="modal-pdf-preview"
+            :src="selectedCertification.document"
+            :title="`${selectedCertification.title} certificate preview`"
+          />
         </div>
 
         <div class="modal-content">
@@ -848,76 +965,12 @@ onBeforeUnmount(() => {
     linear-gradient(145deg, #152f48, #091827 72%);
 }
 
-.certificate-art-paper {
-  position: relative;
-  display: flex;
-  width: min(74%, 16rem);
-  height: 78%;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
-  overflow: hidden;
-  border: 1px solid rgba(222, 197, 137, 0.7);
-  border-radius: 0.2rem;
-  background:
-    linear-gradient(rgba(156, 128, 75, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(156, 128, 75, 0.07) 1px, transparent 1px),
-    linear-gradient(145deg, #f6f1df, #e7ddbf);
-  background-size: 14px 14px, 14px 14px, auto;
-  color: #26394a;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
-  transform: rotate(-2deg);
-}
-
-.certificate-art-paper::before {
+.certificate-art-image {
   position: absolute;
-  inset: 0.4rem;
-  border: 1px solid rgba(156, 128, 75, 0.35);
-  content: '';
-  pointer-events: none;
-}
-
-.certificate-art-issuer {
-  max-width: 75%;
-  overflow: hidden;
-  color: #42617b;
-  font-size: clamp(0.55rem, 1vw, 0.7rem);
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-overflow: ellipsis;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.certificate-art-seal {
-  display: grid;
-  width: 2rem;
-  height: 2rem;
-  place-items: center;
-  border: 1px solid rgba(149, 112, 49, 0.65);
-  border-radius: 50%;
-  color: #a07b34;
-  font-size: 1.1rem;
-}
-
-.certificate-art-label {
-  color: #26394a;
-  font-family: Georgia, serif;
-  font-size: clamp(0.85rem, 1.7vw, 1.2rem);
-  font-weight: 700;
-}
-
-.certificate-art-rule {
-  width: 45%;
-  height: 1px;
-  background: rgba(149, 112, 49, 0.6);
-}
-
-.certificate-art-year {
-  color: #52677b;
-  font-size: 0.65rem;
-  letter-spacing: 0.14em;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .certificate-overlay {
@@ -971,7 +1024,7 @@ onBeforeUnmount(() => {
 
 .certificate-modal {
   position: relative;
-  width: min(100%, 32rem);
+  width: min(100%, 28rem);
   max-height: calc(100vh - 2.5rem);
   overflow-y: auto;
   border: 1px solid rgba(56, 189, 248, 0.35);
@@ -1011,13 +1064,133 @@ onBeforeUnmount(() => {
 .modal-certificate-image {
   position: relative;
   display: grid;
-  min-height: 14rem;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-height: 0;
   place-items: center;
-  margin: 1rem 2rem 0;
+  gap: 0.5rem;
+  margin: 1rem auto 0;
+  padding: 0.75rem;
   border-radius: 0.75rem;
   background:
     radial-gradient(ellipse at 50% 0%, rgba(56, 189, 248, 0.17), transparent 70%),
     #0d1c2b;
+}
+
+.modal-certificate-image.is-image-certificate {
+  box-sizing: border-box;
+  width: min(22rem, calc(100vw - 6rem));
+  height: min(22rem, calc(100vw - 6rem));
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  aspect-ratio: 1;
+}
+
+.modal-certificate-image.is-image-certificate .certificate-zoom-controls {
+  flex: 0 0 auto;
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.modal-certificate-image.is-pdf-certificate {
+  display: flex;
+  width: calc(100% - 3rem);
+  height: min(60vh, 32rem);
+  min-height: 18rem;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 0;
+  overflow: hidden;
+}
+
+.modal-pdf-preview {
+  width: 100%;
+  min-height: 0;
+  flex: 1 1 auto;
+  border: 0;
+  background: #fff;
+}
+
+.modal-pdf-actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.25rem 1rem 0.75rem;
+}
+
+.modal-certificate-preview {
+  display: block;
+  min-height: 0;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 0.35rem;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  will-change: transform;
+}
+
+.certificate-image-viewport {
+  display: flex;
+  width: 100%;
+  flex: 1 1 0;
+  min-height: 0;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  touch-action: none;
+  cursor: default;
+}
+
+.certificate-image-viewport img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.certificate-image-viewport.is-zoomed {
+  cursor: grab;
+}
+
+.certificate-image-viewport.is-dragging {
+  cursor: grabbing;
+}
+
+.certificate-zoom-controls {
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem;
+  gap: 0.4rem;
+}
+
+.certificate-zoom-controls button {
+  min-width: 1.75rem;
+  min-height: 2rem;
+  padding: 0.25rem 0.5rem;
+  border: 0;
+  border-radius: 0.4rem;
+  background: transparent;
+  color: #dff6ff;
+  cursor: pointer;
+}
+
+.certificate-zoom-controls button:nth-child(2) {
+  min-width: 3.25rem;
+}
+
+.certificate-zoom-controls button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.modal-close-inline {
+  position: static;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-left: auto;
+  flex: 0 0 auto;
 }
 
 .modal-document-card {

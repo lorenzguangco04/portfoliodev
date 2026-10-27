@@ -25,7 +25,7 @@ npm run preview
 
 ## Certificates
 
-Certificate documents are stored in `src/image` and displayed from the certification cards in the portfolio.
+Certificate files (PDFs and images) are stored in `src/image` and displayed from the certification cards in the portfolio.
 
 ## License
 
